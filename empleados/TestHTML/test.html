@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pruebas ejercicio 8 (API .NET Core)</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#btnPost").click(function(){
+                var div = $(this).closest("div");
+
+                var empleado = new Object;
+                empleado.Nombre = div.children("input[name='name']").val();
+                empleado.Apellidos = div.children("input[name='surname']").val();
+                $.ajax({
+                    url: "http://localhost:56027/api/empleados",
+                    type: "POST",
+                    contentType: 'application/json',
+                    data: JSON.stringify(empleado),
+                    success: function (data, textStatus, xhr) {
+                        div.children("pre.result").text(JSON.stringify(data, undefined, 2));
+                    },
+                    error: function (data, textStatus, xhr) {
+                        console.log("Error: " + data);
+                        div.children("pre.result").text("Error: " + data);
+                    }
+                });
+            });
+
+            $("#btnGetAll").click(function () {
+                var div = $(this).closest("div");
+                $.ajax({
+                    url: "http://localhost:56027/api/empleados",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data, textStatus, xhr) {
+                        div.children("pre.result").text(JSON.stringify(data, undefined, 2));
+                    },
+                    error: function (data, textStatus, xhr) {
+                        console.log("Error: " + data);
+                        div.children("pre.result").text("Error: " + data);
+                    }
+                });
+            });
+            $("#btnGetAllDelete").click(function () {
+                var div = $(this).closest("div");
+                div.children("pre.result").html("&nbsp;");
+            });
+
+            $("#btnGetID").click(function () {
+                var div = $(this).closest("div");
+
+                var empID = div.children("input[name='id']").val();
+                $.ajax({
+                    url: "http://localhost:56027/api/empleados/id/" + empID,
+                    type: "GET",
+                    success: function (data, textStatus, xhr) {
+                        div.children("pre.result").text(JSON.stringify(data, undefined, 2));
+                    },
+                    error: function (data, textStatus, xhr) {
+                        console.log("Error: " + data);
+                        div.children("pre.result").text("Error: " + data);
+                    }
+                });
+            });
+
+            $("#btnPut").click(function () {
+                var div = $(this).closest("div");
+
+                var empID = parseInt(div.children("input[name='id']").val());
+                var empleado = new Object;
+                empleado.Id = empID;
+                empleado.Nombre = div.children("input[name='name']").val();
+                empleado.Apellidos = div.children("input[name='surname']").val();
+
+                $.ajax({
+                    url: "http://localhost:56027/api/empleados/" + empID,
+                    type: "PUT",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    data: JSON.stringify(empleado),
+                    success: function (data, textStatus, xhr) {
+                        div.children("pre.result").text(JSON.stringify(data, undefined, 2));
+                    },
+                    error: function (data, textStatus, xhr) {
+                        console.log("Error: " + data);
+                        div.children("pre.result").text("Error: " + data);
+                    }
+                });
+            });
+
+            $("#btnDelete").click(function () {
+                var div = $(this).closest("div");
+
+                var empID = div.children("input[name='id']").val();
+
+                $.ajax({
+                    url: "http://localhost:56027/api/empleados/" + empID,
+                    type: "DELETE",
+                    success: function (data, textStatus, xhr) {
+                        div.children("pre.result").text("Borrado con éxito.");
+                    },
+                    error: function (data, textStatus, xhr) {
+                        console.log("Error: " + data);
+                        div.children("pre.result").text("Error: " + data);
+                    }
+                });
+            });
+
+        });
+    </script>
+    <style>
+        pre.result {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h3>Coger todos los empleados (GET)</h3>
+        <input type="button" id="btnGetAll" value="Traer" /><input type="button" id="btnGetAllDelete" value="Borrar" />
+        <p>Resultado: <pre class="result">&nbsp;</pre></p>
+    </div>
+    <div>
+        <h3>Coger un empleado por ID (GET)</h3>
+        ID :- <input type="text" name="id" /><br />
+        <input type="button" id="btnGetID" value="Traer" />
+        <p>Resultado: <pre class="result">&nbsp;</pre></p>
+    </div>
+    <div>
+        <h3>Guardar un empleado (POST)</h3>
+        Nombre :- <input type="text" name="name" /><br />
+        Apellidos:- <input type="text" name="surname" /><br />
+        <input type="button" id="btnPost" value="Guardar" />
+        <p>Resultado: <pre class="result">&nbsp;</pre></p>
+    </div>
+    <div>
+        <h3>Editar un empleado (PUT)</h3>
+        ID :- <input type="text" name="id" /><br />
+        Nuevo nombre :- <input type="text" name="name" /><br />
+        Nuevos apellidos:- <input type="text" name="surname" /><br />
+        <input type="button" id="btnPut" value="Guardar" />
+        <p>Resultado: <pre class="result">&nbsp;</pre></p>
+    </div>
+    <div>
+        <h3>Borrar un empleado (DELETE)</h3>
+        ID :- <input type="text" name="id" /><br />
+        <input type="button" id="btnDelete" value="Borrar" />
+        <p>Resultado: <pre class="result">&nbsp;</pre></p>
+    </div>
+</body>
+</html>
